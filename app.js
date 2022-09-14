@@ -42,14 +42,18 @@ const app = express();
 
 const httpServer = require("http").createServer(app);
 
-const options = {
+const { Server } = require("socket.io");
+const io = new Server(httpServer, {
     cors: {
         origin: '*',
-    },
-};
+    }
+});
 
-const io = require("socket.io")(httpServer, options);
 
+const getSocketIo = () => {
+    return io;
+}
+app.set('io', getSocketIo);
 
 io.on("connection", (socket) => {
     socket.on("sendChatMessage", (arg) => {
@@ -58,16 +62,20 @@ io.on("connection", (socket) => {
     });
 });
 
+
+
+
 // const { ExpressPeerServer } = require("peer");
 // const peerServer = ExpressPeerServer(httpServer, {
 //     debug: true,
 // });
-const {ExpressPeerServer} = require('peer');
+// const { PeerServer } = require('peer');
 
-// const peerServer = PeerServer({ port: 9000, path: '/peerServer' });
+//
+// const peerServer = ExpressPeerServer(httpServer);
+//
+// app.use('/peerServer', peerServer);
 
-const peerServer = ExpressPeerServer(httpServer)
-app.use('/peerjs', peerServer)
 
 //7
 mongoose.connect(mongoURI).then(() => console.log('MongoDB Connected'))
@@ -89,6 +97,11 @@ app.use(bodyParser.json())
 // 6
 app.use(cors())
 
+app.get('/socket.io/socket.io.js', (req, res) => {
+    res.sendFile(__dirname + '/node_modules/socket.io/client-dist/socket.io.js');
+});
+///
+
 //3.2
 app.use('/api/auth', authRoutes);
 
@@ -98,4 +111,4 @@ app.use('/api/room', roomRoutes);
 //
 // app.use('/peerServer', peerServer);
 
-module.exports = {io, app, httpServer};
+module.exports = {app, httpServer, io, getSocketIo};

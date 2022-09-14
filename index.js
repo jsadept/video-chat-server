@@ -1,5 +1,4 @@
-const {httpServer} = require("./app");
-
+const {app, httpServer} = require("./app");
 
 const PORT = process.env.PORT || 5500;
 

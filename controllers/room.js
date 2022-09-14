@@ -1,9 +1,9 @@
 
 const { v4: uuidv4 } = require('uuid');
-const Peer = require('simple-peer');
-const {io, app} = require("../app");
+
 
 module.exports.create = async function (req, res){
+    const io = req.app.get('io')();
     try{
         const socketId  = req.body.socketId;
         const socket  = io.sockets.sockets.get(socketId);
@@ -26,6 +26,7 @@ module.exports.create = async function (req, res){
 
 
 module.exports.join = function (req, res){
+    const io = req.app.get('io')();
     const socketId  = req.body.socketId;
     const roomId  = req.body.roomId;
     const peerId  = req.body.peerId;
@@ -47,6 +48,7 @@ module.exports.join = function (req, res){
 
 
 module.exports.leave = function (req, res){
+    const io = req.app.get('io')();
 
     const socketId  = req.body.socketId;
     const roomId  = req.body.roomId;
@@ -61,6 +63,7 @@ module.exports.leave = function (req, res){
 
 
 module.exports.hasRoom = function (req, res){
+    const io = req.app.get('io')();
 
     const rooms = Array.from(io.sockets.adapter.rooms, ([name, value]) => ({ name, value }));
     const isRoom = rooms.some((curr) => curr.name === req.body.roomId);
@@ -81,5 +84,5 @@ module.exports.hasRoom = function (req, res){
 }
 
 
-//
-// io.listen(3001);
+
+//io.listen(3001);
