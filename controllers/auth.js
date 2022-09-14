@@ -27,7 +27,7 @@ module.exports.login = async function (req, res) {
             //return token
             const token = JWT.sign({...candidateUser}, jwt, {expiresIn: EXP_TIME});
             res.status(200).json({
-                token: `Bearer ${token}`,
+                token: `${token}`,
                 user: candidateUser
             })
         }

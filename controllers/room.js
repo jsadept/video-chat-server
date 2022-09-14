@@ -1,20 +1,7 @@
 
 const { v4: uuidv4 } = require('uuid');
 const Peer = require('simple-peer');
-
-const app = require('../app');
-
-
-const httpServer = require("http").createServer(app);
-const options = {
-    cors: {
-        origin: '*'
-    }
-};
-const io = require("socket.io")(httpServer, options);
-
-
-
+const {io, app} = require("../app");
 
 module.exports.create = async function (req, res){
     try{
@@ -92,12 +79,7 @@ module.exports.hasRoom = function (req, res){
     }
 
 }
-io.on("connection", (socket) => {
-    socket.on("sendChatMessage", (arg) => {
-        const room = [...socket.rooms][1];
-        socket.broadcast.to(room).emit('getChatMessage', arg);
-    });
-});
 
 
-io.listen(3001);
+//
+// io.listen(3001);

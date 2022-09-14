@@ -41,14 +41,33 @@ const app = express();
 
 
 const httpServer = require("http").createServer(app);
+
+const options = {
+    cors: {
+        origin: '*',
+    },
+};
+
+const io = require("socket.io")(httpServer, options);
+
+
+io.on("connection", (socket) => {
+    socket.on("sendChatMessage", (arg) => {
+        const room = [...socket.rooms][1];
+        socket.broadcast.to(room).emit('getChatMessage', arg);
+    });
+});
+
 // const { ExpressPeerServer } = require("peer");
 // const peerServer = ExpressPeerServer(httpServer, {
 //     debug: true,
 // });
-const { PeerServer } = require('peer');
+const {ExpressPeerServer} = require('peer');
 
-const peerServer = PeerServer({ port: 9000, path: '/peerServer' });
+// const peerServer = PeerServer({ port: 9000, path: '/peerServer' });
 
+const peerServer = ExpressPeerServer(httpServer)
+app.use('/peerjs', peerServer)
 
 //7
 mongoose.connect(mongoURI).then(() => console.log('MongoDB Connected'))
@@ -79,4 +98,4 @@ app.use('/api/room', roomRoutes);
 //
 // app.use('/peerServer', peerServer);
 
-module.exports = app;
+module.exports = {io, app, httpServer};
