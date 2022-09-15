@@ -52,7 +52,7 @@ module.exports.login = async function (req, res) {
 module.exports.register = async function (req, res) {
     // email(unique or error)
     // password
-    if(!req.body.email || !!req.body.password) return res.status(404).json({
+    if(!req.body.email || !req.body.password) return res.status(404).json({
         message: 'Bad data'
     })
 
